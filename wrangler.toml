@@ -1,0 +1,26 @@
+name = "atuin"
+main = "build/index.js"
+compatibility_date = "2026-11-01"
+
+# For development and deploying from source. deploy/wrangler.toml and releases drop this stanza
+# and ship build/ instead, because the Workers Builds image has no Rust toolchain.
+[build]
+command = "worker-build --release"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "atuin"
+migrations_dir = "migrations"
+# no database_id: wrangler 4.45+ provisions it on first deploy and writes the ID back here
+
+[vars]
+MAX_RECORD_SIZE = "262144" # 256 KiB; PAGE_SIZE × MAX_RECORD_SIZE must not exceed 40 MiB (D1 caps results at 50 MB)
+PAGE_SIZE = "100"
+
+[[ratelimits]]
+name = "LOGIN_LIMIT"
+namespace_id = "4710"               # unique per binding within the account; not the docs' example 1001
+simple = { limit = 5, period = 60 }
+
+[observability]
+enabled = true

@@ -1,0 +1,22 @@
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# Rust
+target/
+
+.env
+
+# Worker
+build/
+dist/
+node_modules/
+.wrangler/
+.dev.vars

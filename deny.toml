@@ -1,0 +1,36 @@
+[graph]
+all-features = true
+
+[licenses]
+# The crate itself is AGPL-3.0-only and never published; the allowlist below is
+# a policy for third-party code only.
+private = { ignore = true }
+allow = [
+  "Apache-2.0",
+  "MIT",
+
+  "Unicode-3.0",
+  "BSD-3-Clause",
+  "ISC",
+  "CDLA-Permissive-2.0",
+  "CC0-1.0",
+  "BSL-1.0", # xxhash-rust: the capability token
+  "Zlib",    # foldhash, via the dev-only atuin-client
+]
+
+[advisories]
+ignore = [
+  # basic-toml is unmaintained; it reaches us only through the dev-only atuin crates.
+  { id = "RUSTSEC-2026-0374", reason = "dev-dependency of atuin-common, not shipped" },
+]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "warn"
+allow-wildcard-paths = true
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+# The drift and end-to-end tests use upstream's own types and client at the pinned tag.
+allow-git = ["https://github.com/atuinsh/atuin"]

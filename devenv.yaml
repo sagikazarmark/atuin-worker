@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=https://devenv.sh/devenv.schema.json
+inputs:
+  extras:
+    url: github:sagikazarmark/devenv-extras
+    overlays:
+    - default
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling
+  nixpkgs-multiverse:
+    url: github:fzakaria/nixpkgs-multiverse
+  rust-overlay:
+    url: github:oxalica/rust-overlay
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+imports:
+- extras/modules

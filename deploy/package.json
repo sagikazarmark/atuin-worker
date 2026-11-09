@@ -1,0 +1,32 @@
+{
+  "name": "atuin-worker",
+  "private": true,
+  "license": "0BSD",
+  "scripts": {
+    "build": "sh download-worker.sh",
+    "upgrade": "curl -fsSL --retry 3 -o download-worker.sh.new https://github.com/sagikazarmark/atuin-worker/releases/latest/download/download-worker.sh && sh download-worker.sh.new && mv download-worker.sh.new download-worker.sh",
+    "deploy": "wrangler d1 migrations apply DB --remote && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.45.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "ATUIN_USERNAME": {
+        "description": "The name you log in with: `atuin login -u <username>`. Letters, digits and hyphens only."
+      },
+      "ATUIN_PASSWORD": {
+        "description": "At least 16 characters. Generate it, for example with `openssl rand -base64 24`, and do not use it anywhere else."
+      },
+      "DB": {
+        "description": "Stores your encrypted Atuin records. D1 keeps it in one region, near where it is created."
+      },
+      "PAGE_SIZE": {
+        "description": "Records per upload and download page. **PAGE_SIZE × MAX_RECORD_SIZE** must not exceed 40 MiB."
+      },
+      "MAX_RECORD_SIZE": {
+        "description": "Largest accepted record payload in bytes. Real records are a few KB."
+      }
+    }
+  }
+}

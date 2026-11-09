@@ -1,0 +1,6 @@
+# `cargo audit` reads this file; `cargo deny` reads `deny.toml`. The two keep
+# the same ignore list, and `deny.toml` carries the rationale for each entry.
+[advisories]
+ignore = [
+  "RUSTSEC-2026-0374", # see deny.toml
+]

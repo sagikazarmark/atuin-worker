@@ -1,0 +1,30 @@
+#!/bin/sh
+set -eu
+
+version='@VERSION@'
+sha256='@SHA256@'
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' 0
+trap 'exit 1' HUP INT TERM
+
+curl -fsSL --retry 3 -o "$tmp/worker.tar.gz" "https://github.com/sagikazarmark/atuin-worker/releases/download/$version/worker.tar.gz"
+
+printf '%s  %s\n' "$sha256" "$tmp/worker.tar.gz" > "$tmp/SHA256SUMS"
+if command -v sha256sum >/dev/null 2>&1; then
+  sha256sum --check --strict "$tmp/SHA256SUMS"
+else
+  shasum -a 256 --check --strict "$tmp/SHA256SUMS"
+fi
+
+# The archive holds build/ (index.js, index_bg.wasm, LICENSE) and migrations/; replace only those.
+tar -xzf "$tmp/worker.tar.gz" -C "$tmp" build migrations
+
+test -f "$tmp/build/index.js"
+test -f "$tmp/build/index_bg.wasm"
+test -f "$tmp/migrations/0001_init.sql"
+
+rm -rf build migrations
+mv "$tmp/build" "$tmp/migrations" .
+
+printf 'Downloaded atuin-worker %s\n' "$version"

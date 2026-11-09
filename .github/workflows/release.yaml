@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump from the latest vX.Y.Z tag (ignored when version is set)
+        type: choice
+        options: [none, patch, minor, major]
+        default: none
+      version:
+        description: Exact version to release, vX.Y.Z (overrides bump)
+        type: string
+        required: false
+      skip-tests:
+        description: Skip the end-to-end and smoke tests (escape hatch)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: devenv shell -- bash -e {0}
+
+jobs:
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.pick.outputs.version }}
+
+    steps:
+      - name: Check branch
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" != "refs/heads/main" ]]; then
+            echo "::error::Release from main, not $GITHUB_REF"
+            exit 1
+          fi
+
+      - name: Pick the version
+        id: pick
+        uses: sagikazarmark/next-version@670c15e6d19fda327005e4a209c27e20ab567e28 # v0.1.0
+        with:
+          bump: ${{ inputs.bump }}
+          version: ${{ inputs.version }}
+
+  package:
+    name: Package
+    needs: version
+    uses: ./.github/workflows/package.yaml
+    with:
+      version: ${{ needs.version.outputs.version }}
+      cache: false
+      skip-tests: ${{ inputs.skip-tests }}
+
+  attest:
+    name: Attest
+    needs: package
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      attestations: write
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Download the release
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+
+      - name: Attest build provenance
+        id: attest
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/worker.tar.gz
+
+      - name: Name the attestation after the archive
+        run: cp "${{ steps.attest.outputs.bundle-path }}" dist/worker.tar.gz.sigstore.json
+
+      - name: Upload the attestation
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: attestation
+          path: dist/worker.tar.gz.sigstore.json
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: true
+
+  publish:
+    name: Publish
+    needs: [version, attest]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Download the release and the attestation
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: "{dist,attestation}"
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "${{ needs.version.outputs.version }}" \
+            --target "$GITHUB_SHA" \
+            --generate-notes \
+            dist/worker.tar.gz \
+            dist/worker.tar.gz.sha256 \
+            dist/worker.tar.gz.sigstore.json \
+            dist/download-worker.sh

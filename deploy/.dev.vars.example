@@ -1,0 +1,5 @@
+# The Worker's secrets. The Deploy to Cloudflare button asks for each one listed here; otherwise
+# set both with `wrangler secret put`. The username may contain letters, digits and hyphens; the
+# password must be at least 16 characters. Generate it, for example with `openssl rand -base64 24`.
+ATUIN_USERNAME=
+ATUIN_PASSWORD=
