@@ -3,4 +3,5 @@
 [advisories]
 ignore = [
   "RUSTSEC-2026-0374", # see deny.toml
+  "RUSTSEC-2026-0459", # see deny.toml
 ]
