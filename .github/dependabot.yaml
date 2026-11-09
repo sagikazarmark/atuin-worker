@@ -6,6 +6,9 @@ updates:
     schedule:
       interval: daily
     groups:
+      cargo-atuin:
+        patterns:
+          - "atuin-*"
       cargo:
         patterns:
           - "*"
