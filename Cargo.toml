@@ -28,8 +28,8 @@ http-body-util = "=0.1.5"
 [dev-dependencies]
 # prepare() check of sql.rs only; 0.32 because atuin-client links the same libsqlite3-sys
 rusqlite = { version = "0.32", features = ["bundled"] }
-atuin-domain = { git = "https://github.com/atuinsh/atuin", tag = "v18.24.4" }
-atuin-client = { git = "https://github.com/atuinsh/atuin", tag = "v18.24.4", default-features = false, features = [
+atuin-domain = { git = "https://github.com/atuinsh/atuin", tag = "v18.24.5" }
+atuin-client = { git = "https://github.com/atuinsh/atuin", tag = "v18.24.5", default-features = false, features = [
     "sync",
 ] }
 reqwest = { version = "0.13", default-features = false, features = ["json"] }
