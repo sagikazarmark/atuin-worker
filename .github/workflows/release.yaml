@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      version: ${{ steps.pick.outputs.version }}
+      tag: ${{ steps.pick.outputs.tag }}
 
     steps:
       - name: Check branch
@@ -47,7 +47,7 @@ jobs:
 
       - name: Pick the version
         id: pick
-        uses: sagikazarmark/next-version@670c15e6d19fda327005e4a209c27e20ab567e28 # v0.1.0
+        uses: sagikazarmark/next-version@e291b39a83bf84c948c419871f910173bf8343dc # v0.2.0
         with:
           bump: ${{ inputs.bump }}
           version: ${{ inputs.version }}
@@ -57,7 +57,7 @@ jobs:
     needs: version
     uses: ./.github/workflows/package.yaml
     with:
-      version: ${{ needs.version.outputs.version }}
+      version: ${{ needs.version.outputs.tag }}
       cache: false
       skip-tests: ${{ inputs.skip-tests }}
 
@@ -124,7 +124,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create "${{ needs.version.outputs.version }}" \
+          gh release create "${{ needs.version.outputs.tag }}" \
             --target "$GITHUB_SHA" \
             --generate-notes \
             dist/worker.tar.gz \
