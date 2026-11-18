@@ -19,10 +19,10 @@ hmac = "=0.13.0"
 sha2 = "=0.11.1"
 subtle = "=2.6.1"
 base64 = "=0.23.1"
-xxhash-rust = { version = "=0.8.19", features = ["xxh3"] }
+xxhash-rust = { version = "=0.8.21", features = ["xxh3"] }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-worker = { version = "=0.8.7", features = ["http", "d1"] }
+worker = { version = "=0.9.0", features = ["http", "d1"] }
 http-body-util = "=0.1.5"
 
 [dev-dependencies]
