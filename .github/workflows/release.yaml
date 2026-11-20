@@ -47,7 +47,7 @@ jobs:
 
       - name: Pick the version
         id: pick
-        uses: sagikazarmark/next-version@e291b39a83bf84c948c419871f910173bf8343dc # v0.2.0
+        uses: sagikazarmark/next-version@fc0401d3719a172991c36ec41f5e43419c30e90f # v0.3.0
         with:
           bump: ${{ inputs.bump }}
           version: ${{ inputs.version }}
