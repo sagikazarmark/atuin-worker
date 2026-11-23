@@ -208,8 +208,8 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "atuin-client"
-version = "18.24.4"
-source = "git+https://github.com/atuinsh/atuin?tag=v18.24.4#b7ccdaf6b71f648d096de24b66cc8c7821d73351"
+version = "18.25.1"
+source = "git+https://github.com/atuinsh/atuin?tag=v18.25.1#a4c2ee46b4341872e7b74688b604cb065da91e40"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -231,6 +231,7 @@ dependencies = [
  "indicatif",
  "interim",
  "itertools",
+ "jiff 1.0.2",
  "libsqlite3-sys",
  "memchr",
  "minspan",
@@ -249,6 +250,7 @@ dependencies = [
  "secrecy",
  "semver",
  "serde",
+ "serde_ignored",
  "serde_json",
  "serde_regex",
  "serde_with",
@@ -256,6 +258,7 @@ dependencies = [
  "sqlx",
  "strum 0.27.2",
  "strum_macros 0.28.0",
+ "terminal-colorsaurus",
  "thiserror 2.0.21",
  "time",
  "tokio",
@@ -270,14 +273,15 @@ dependencies = [
 
 [[package]]
 name = "atuin-common"
-version = "18.24.4"
-source = "git+https://github.com/atuinsh/atuin?tag=v18.24.4#b7ccdaf6b71f648d096de24b66cc8c7821d73351"
+version = "18.25.1"
+source = "git+https://github.com/atuinsh/atuin?tag=v18.25.1#a4c2ee46b4341872e7b74688b604cb065da91e40"
 dependencies = [
  "async-stream",
  "base64 0.22.1",
  "bytes",
  "bytesize",
  "colored",
+ "config",
  "crypto_secretbox",
  "derive_more",
  "dirs",
@@ -292,6 +296,8 @@ dependencies = [
  "i18n-embed",
  "i18n-embed-fl",
  "itertools",
+ "jiff 1.0.2",
+ "libc",
  "libsqlite3-sys",
  "memchr",
  "notify",
@@ -314,7 +320,6 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with",
- "sha2 0.10.9",
  "shellexpand",
  "shlex",
  "sqlx",
@@ -323,32 +328,29 @@ dependencies = [
  "sysinfo",
  "tempfile",
  "thiserror 2.0.21",
- "time",
  "tiny-bip39",
  "tokio",
  "tokio-util",
- "toml_edit",
  "tracing",
  "tracing-subscriber",
  "typed-builder",
  "url",
  "uuid",
  "windows-sys 0.61.2",
- "xxhash-rust",
  "zeroize",
- "zstd",
 ]
 
 [[package]]
 name = "atuin-domain"
-version = "18.24.4"
-source = "git+https://github.com/atuinsh/atuin?tag=v18.24.4#b7ccdaf6b71f648d096de24b66cc8c7821d73351"
+version = "18.25.1"
+source = "git+https://github.com/atuinsh/atuin?tag=v18.25.1#a4c2ee46b4341872e7b74688b604cb065da91e40"
 dependencies = [
  "async-trait",
  "atuin-common",
  "derive_more",
  "easy-cast",
  "http",
+ "jiff 1.0.2",
  "parking_lot",
  "reqwest",
  "reqwest-middleware",
@@ -360,7 +362,6 @@ dependencies = [
  "strum 0.27.2",
  "strum_macros 0.28.0",
  "thiserror 2.0.21",
- "time",
  "tokio",
  "typed-builder",
  "url",
@@ -2040,9 +2041,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ac703058abac89e5c39b0b879dce2b6b14a4ba36600c7e7e3d0c60a6883ef3c"
 dependencies = [
  "defmt",
- "jiff-core",
- "jiff-static",
- "jiff-tzdb-platform",
+ "jiff-core 0.1.2",
+ "jiff-static 0.2.39",
+ "jiff-tzdb-platform 0.1.3",
+ "log",
+ "portable-atomic",
+ "portable-atomic-util",
+ "serde_core",
+ "windows-link",
+]
+
+[[package]]
+name = "jiff"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c5e77cbfb9fff4798e283c2d69dff39fc2c45e7da017e5ce95b654e46ea41236"
+dependencies = [
+ "jiff-core 1.0.1",
+ "jiff-static 1.0.2",
+ "jiff-tzdb-platform 1.0.0",
  "log",
  "portable-atomic",
  "portable-atomic-util",
@@ -2061,15 +2078,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "jiff-core"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b6b46a105a9874634dd96231021526bf24ca04955a5998c59a9c7666e634b7b8"
+dependencies = [
+ "log",
+]
+
+[[package]]
 name = "jiff-static"
 version = "0.2.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6dc32470c67eb7d0e9ccb74303fa925313dc04cecb1aa048beaa6f391e36a93d"
 dependencies = [
- "jiff-core",
+ "jiff-core 0.1.2",
  "proc-macro2",
  "quote",
  "syn 2.0.119",
+]
+
+[[package]]
+name = "jiff-static"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e9067a0b23e5be3147d56b2dcf652b18e6b1364caca93fb157653b6fbcab23a9"
+dependencies = [
+ "jiff-core 1.0.1",
+ "proc-macro2",
+ "quote",
+ "syn 3.0.9",
 ]
 
 [[package]]
@@ -2079,12 +2117,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fa8377070c6bae868759445e5a77f66d84f0b72f3a054bfb00e6d038b8282da7"
 
 [[package]]
+name = "jiff-tzdb"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "12e71a1b68a875a44a33bb7a1dd84392cb77145a3367a552a3cfe6a4f5cf3afc"
+
+[[package]]
 name = "jiff-tzdb-platform"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "875a5a69ac2bab1a891711cf5eccbec1ce0341ea805560dcd90b7a2e925132e8"
 dependencies = [
- "jiff-tzdb",
+ "jiff-tzdb 0.1.9",
+]
+
+[[package]]
+name = "jiff-tzdb-platform"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc65b284afcfa8f6cf189c7274c805505314a7ab975c60e1f548bff56525420e"
+dependencies = [
+ "jiff-tzdb 1.0.0",
 ]
 
 [[package]]
@@ -2400,15 +2453,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "071dfc062690e90b734c0b2273ce72ad0ffa95f0c74596bc250dcfd960262841"
 dependencies = [
  "autocfg",
-]
-
-[[package]]
-name = "num_threads"
-version = "0.1.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cabcc654086861f9e1bc5115258de62ef92c79b20f4615a1b0cc57c4e82027d4"
-dependencies = [
- "libc",
 ]
 
 [[package]]
@@ -3350,6 +3394,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_ignored"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "115dffd5f3853e06e746965a20dcbae6ee747ae30b543d91b0e089668bb07798"
+dependencies = [
+ "serde",
+ "serde_core",
+]
+
+[[package]]
 name = "serde_json"
 version = "1.0.154"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3407,7 +3461,7 @@ dependencies = [
  "hex",
  "indexmap 1.9.3",
  "indexmap 2.14.2",
- "jiff",
+ "jiff 0.2.39",
  "schemars 0.9.0",
  "schemars 1.2.3",
  "serde_core",
@@ -3638,7 +3692,6 @@ dependencies = [
  "sha2 0.10.9",
  "smallvec",
  "thiserror 2.0.21",
- "time",
  "tokio",
  "tokio-stream",
  "tracing",
@@ -3708,7 +3761,6 @@ dependencies = [
  "sha2 0.11.1",
  "sqlx-core",
  "thiserror 2.0.21",
- "time",
  "tracing",
  "uuid",
 ]
@@ -3744,7 +3796,6 @@ dependencies = [
  "sqlx-core",
  "stringprep",
  "thiserror 2.0.21",
- "time",
  "tracing",
  "uuid",
  "whoami",
@@ -3771,7 +3822,6 @@ dependencies = [
  "serde",
  "sqlx-core",
  "thiserror 2.0.21",
- "time",
  "tracing",
  "url",
  "uuid",
@@ -3919,6 +3969,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "terminal-colorsaurus"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a46bb5364467da040298c573c8a95dbf9a512efc039630409a03126e3703e90"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "memchr",
+ "mio",
+ "terminal-trx",
+ "windows-sys 0.61.2",
+ "xterm-color",
+]
+
+[[package]]
+name = "terminal-trx"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3b3f27d9a8a177e57545481faec87acb45c6e854ed1e5a3658ad186c106f38ed"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "windows-sys 0.61.2",
+]
+
+[[package]]
 name = "thiserror"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3974,9 +4050,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb87b95ec50ddfa440816d227a17b2ccbdda963a316a727fda0fc4334f7d134"
 dependencies = [
  "deranged",
- "libc",
  "num-conv",
- "num_threads",
  "powerfmt",
  "serde_core",
  "time-core",
@@ -4127,19 +4201,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b86d767906c6c42421dcba507eb9d203e779497710a47782a224bb871653053"
 dependencies = [
  "serde_core",
-]
-
-[[package]]
-name = "toml_edit"
-version = "0.25.18+spec-1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ec6e78bd70db9420d8d212fa9dc97f116448a1ceff5d00eabb991d407e21396"
-dependencies = [
- "indexmap 2.14.2",
- "toml_datetime",
- "toml_parser",
- "toml_writer",
- "winnow",
 ]
 
 [[package]]
@@ -5034,6 +5095,12 @@ name = "writeable"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ad82d2a33cdc9674dc7465672f271e096168fcdbe0f799d9e6db8c5892679dc"
+
+[[package]]
+name = "xterm-color"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7008a9d8ba97a7e47d9b2df63fcdb8dade303010c5a7cd5bf2469d4da6eba673"
 
 [[package]]
 name = "xxhash-rust"
